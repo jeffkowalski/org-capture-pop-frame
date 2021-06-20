@@ -170,7 +170,7 @@ set by `ocpf---org-capture'."
 (provide 'org-capture-pop-frame)
 
 ;; Local Variables:
-;; coding: utf-8-unix
+;; coding: utf-8
 ;; End:
 
 ;;; org-capture-pop-frame.el ends here
