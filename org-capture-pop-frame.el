@@ -136,7 +136,7 @@ set by `ocpf---org-capture'."
                ((eq system-type 'gnu/linux) 'x)
                ((eq system-type 'windows-nt) 'w32)))
         (after-make-frame-functions
-         #'(lambda (frame)
+         (list #'(lambda (frame)
              (progn
                (select-frame frame)
                (setq word-wrap nil)
@@ -155,7 +155,7 @@ set by `ocpf---org-capture'."
                                        'keymap
                                        (let ((map (make-sparse-keymap)))
                                          (define-key map [header-line mouse-1] 'org-capture-kill)
-                                         map))))))))
+                                         map)))))))))
     (make-frame
      `((window-system . ,frame-window-system)
        ,@ocpf-frame-parameters))))
