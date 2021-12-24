@@ -138,7 +138,7 @@ set by `ocpf---org-capture'."
         (after-make-frame-functions
          #'(lambda (frame)
              (progn
-               (select-frame frame)
+               (select-frame-set-input-focus frame)
                (setq word-wrap nil)
                (setq truncate-lines nil)
                (funcall orig-fun goto keys)
