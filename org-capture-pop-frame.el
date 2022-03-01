@@ -141,7 +141,14 @@ set by `ocpf---org-capture'."
                (select-frame frame)
                (setq word-wrap nil)
                (setq truncate-lines nil)
-               (funcall orig-fun goto keys)
+               (condition-case err
+                   (funcall orig-fun goto keys)
+                 (user-error (if (s-equals? "Abort" (error-message-string err))
+                                 (ocpf--delete-frame)
+                               (signal (car err) (cdr err))))
+                 (error (if (s-equals? "No entry available" (error-message-string err))
+                                 (ocpf--delete-frame)
+                               (signal (car err) (cdr err)))))
                (setq header-line-format
                      (list "Capture buffer. "
                            (propertize (substitute-command-keys "Finish \\[org-capture-finalize], ")
