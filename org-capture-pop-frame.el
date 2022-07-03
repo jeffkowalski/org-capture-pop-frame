@@ -136,12 +136,19 @@ set by `ocpf---org-capture'."
                ((eq system-type 'gnu/linux) 'x)
                ((eq system-type 'windows-nt) 'w32)))
         (after-make-frame-functions
-         #'(lambda (frame)
+         (list #'(lambda (frame)
              (progn
                (select-frame-set-input-focus frame)
                (setq word-wrap nil)
                (setq truncate-lines nil)
-               (funcall orig-fun goto keys)
+               (condition-case err
+                   (funcall orig-fun goto keys)
+                 (user-error (if (s-equals? "Abort" (error-message-string err))
+                                 (ocpf--delete-frame)
+                               (signal (car err) (cdr err))))
+                 (error (if (s-equals? "No entry available" (error-message-string err))
+                                 (ocpf--delete-frame)
+                               (signal (car err) (cdr err)))))
                (setq header-line-format
                      (list "Capture buffer. "
                            (propertize (substitute-command-keys "Finish \\[org-capture-finalize], ")
@@ -155,7 +162,7 @@ set by `ocpf---org-capture'."
                                        'keymap
                                        (let ((map (make-sparse-keymap)))
                                          (define-key map [header-line mouse-1] 'org-capture-kill)
-                                         map))))))))
+                                         map)))))))))
     (make-frame
      `((window-system . ,frame-window-system)
        ,@ocpf-frame-parameters))))
@@ -170,7 +177,7 @@ set by `ocpf---org-capture'."
 (provide 'org-capture-pop-frame)
 
 ;; Local Variables:
-;; coding: utf-8-unix
+;; coding: utf-8
 ;; End:
 
 ;;; org-capture-pop-frame.el ends here
