@@ -131,11 +131,7 @@ set by `ocpf---org-capture'."
 (defun ocpf--org-capture (orig-fun &optional goto keys)
   "Create a new frame and run org-capture."
   (interactive)
-  (let ((frame-window-system
-         (cond ((eq system-type 'darwin) 'ns)
-               ((eq system-type 'gnu/linux) 'x)
-               ((eq system-type 'windows-nt) 'w32)))
-        (after-make-frame-functions
+  (let ((after-make-frame-functions
          (list #'(lambda (frame)
              (progn
                (select-frame-set-input-focus frame)
@@ -164,8 +160,7 @@ set by `ocpf---org-capture'."
                                          (define-key map [header-line mouse-1] 'org-capture-kill)
                                          map)))))))))
     (make-frame
-     `((window-system . ,frame-window-system)
-       ,@ocpf-frame-parameters))))
+     `(,@ocpf-frame-parameters))))
 
 (advice-add 'org-capture :around #'ocpf--org-capture)
 (advice-add 'org-capture-finalize :after #'ocpf--delete-frame)
